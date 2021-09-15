@@ -10,6 +10,6 @@ const dogPost = require("./postDog");
 
 router.use("/dogs", getDogs);
 router.use("/dog", dogPost);
-router.use("/temperament", temperaments);
+router.use("/temperaments", temperaments);
 
 module.exports = router;

@@ -3,21 +3,21 @@ const router = Router();
 const {
   URL_API,
   parseDogs,
+  parseDbDogs,
+  parseApiTemp,
   fetchData,
   searchDbDogs,
   mergeDogs,
 } = require("../utils/utils");
 
 router.get("/", async (req, res) => {
-  const { page } = req.body;
-
   try {
     const response = await fetchData(URL_API);
 
     const dogs = await parseDogs(response.data);
 
     // buscar razas en la BD
-    const dbDogs = await searchDbDogs();
+    const dbDogs = parseDbDogs(await searchDbDogs());
 
     // unir las razas
     const mergedDogs = mergeDogs(dogs, dbDogs);
@@ -32,21 +32,12 @@ router.get("/", async (req, res) => {
         : res.status(404).json({ error: "There is no such breed" });
     }
 
-    //Paginacion
-    const paginatedDogs = mergedDogs.slice(
-      parseInt(page) - 1,
-      parseInt(page) + 7
-    );
-    console.log(paginatedDogs.length);
-
     // devolver las razas
-    res.json(paginatedDogs);
+    res.json(mergedDogs);
   } catch (error) {
     console.error(error);
   }
 });
-
-// imagen, nombre ,temperamento, altura, peso, años de vida
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
@@ -63,9 +54,9 @@ router.get("/:id", async (req, res) => {
       const mergedDogs = mergeDogs(dogs, dbDogs);
 
       //Filter breeds by name
-      const filteredDogs = mergedDogs.filter((dog) => dog.id === parseInt(id)); // TODO, problemas con los ID de los perros creados por mi
+      const filteredDog = mergedDogs.find((dog) => String(dog.id) === id);
 
-      res.json(filteredDogs);
+      res.json(filteredDog);
     } catch (error) {
       console.error(error);
     }

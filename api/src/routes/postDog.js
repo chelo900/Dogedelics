@@ -3,7 +3,7 @@ const router = Router();
 const { Dog, Temperament } = require("../db");
 
 router.post("/", async (req, res) => {
-  const { name, height, weight, life_span, img, temperament } = req.body;
+  const { name, height, weight, life_span, image, temperaments } = req.body;
 
   try {
     const [dog, created] = await Dog.findOrCreate({
@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
         height: height,
         weight: weight,
         life_span: life_span ? life_span : "",
-        img: img ? img : "",
+        image: image ? image : "",
       },
     });
     if (!created) {
@@ -20,16 +20,14 @@ router.post("/", async (req, res) => {
     }
 
     // Add temperaments to dog
-    if (temperament) {
-      const temperamentResult = await Promise.all(
-        temperament.map((value) => Temperament.findByPk(value))
+    if (temperaments) {
+      const temperamentsResult = await Promise.all(
+        temperaments.map((value) => Temperament.findByPk(value))
       );
-
-      await dog.setTemperaments(temperamentResult);
+      await dog.setTemperaments(temperamentsResult);
     }
 
     res.status(201).json(dog);
-    // console.log(created);
   } catch (error) {
     console.error(error);
   }

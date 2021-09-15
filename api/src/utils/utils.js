@@ -14,16 +14,39 @@ const searchDbDogs = async () => await Dog.findAll({ include: Temperament });
 const mergeDogs = (dogs, dbDogs) => [...dbDogs, ...dogs];
 
 //Map dogs for keeping the useful props
-const parseDogs = (dogs) => {
+const parseDogs = async (dogs) => {
+  return await Promise.all(
+    dogs.map(async (dog) => {
+      return (newDog = {
+        id: dog.id,
+        image: dog.image.url,
+        name: dog.name,
+        temperaments: await parseApiTemp(
+          dog.temperament
+            ? dog.temperament.split(",").map((temp) => temp.replace(" ", ""))
+            : []
+        ),
+        weight: dog.weight.imperial
+          .replace("–", "-")
+          .split(" - ")
+          .map((weight) => Math.round(Number(weight) * 0.453592)),
+
+        height: dog.height.metric.split(" - ").map((weight) => Number(weight)),
+        life_span: dog.life_span,
+      });
+    })
+  );
+};
+const parseDbDogs = (dogs) => {
   return dogs.map((dog) => {
     return (newDog = {
       id: dog.id,
-      img: dog.image.url,
+      image: dog.image.url ? dog.image.url : "Default image", //TODO
       name: dog.name,
-      temperaments: dog.temperament ? dog.temperament : "",
-      weight: dog.weight,
-      height: dog.height,
-      life_span: dog.life_span,
+      temperaments: dog.temperaments,
+      weight: dog.weight.split("-").map((weight) => Number(weight)),
+      height: dog.height.split("-").map((weight) => Number(weight)),
+      life_span: dog.life_span ? dog.life_span : "",
     });
   });
 };
@@ -40,6 +63,17 @@ const parseTemperaments = (temps) => {
   const temperaments = new Array(...new Set(tempList)).sort();
 
   return temperaments;
+};
+const parseApiTemp = async (temps) => {
+  const dbTemps = await Temperament.findAll();
+  const temperaments = temps.map((temp) => {
+    const foundTemp = dbTemps.find((dbTemp) => dbTemp.name === temp);
+    if (foundTemp) return foundTemp;
+    return undefined;
+  });
+  const cleanTemperaments = temperaments.filter((temp) => temp !== undefined);
+  // console.log(cleanTemperaments[0].toJSON());
+  return cleanTemperaments;
 };
 
 // Save/load temperaments from database
@@ -62,7 +96,9 @@ const loadTemperaments = async () => {
 module.exports = {
   URL_API,
   parseDogs,
+  parseDbDogs,
   parseTemperaments,
+  parseApiTemp,
   loadTemperaments,
   fetchData,
   searchDbDogs,

@@ -1,26 +1,74 @@
-import axios from "axios";
-//Get dogs
-export const GET_DOGS = "GET_DOGS";
-//Get query dogs
-export const GET_QUERY_DOGS = "GET_QUERY_DOGS";
-//Get dog by ID // Detail dog
-//Filter Dogs by created or exist
-//Filter Dogs by temperament
-//Sort Dogs by name
-//Sort Dogs by weight
-
-const URL_API = "http://localhost:3001";
+import { fetchDogs, fetchTemperaments, createDog } from "../utils";
+import {
+  GET_DOGS_ACTION,
+  GET_QUERY_DOGS_ACTION,
+  GET_DOG_BY_ID_ACTION,
+  GET_TEMPERAMENTS_ACTION,
+  POST_DOG_ACTION,
+  FILTER_BY_TEMP_ACTION,
+  FILTER_BY_ORIGIN_ACTION,
+  CLEAR_FILTERS_ACTION,
+  ORDER_ACTION,
+} from "../constants";
 
 export const getDogs = () => async (dispatch) => {
-  const response = await axios.get(`${URL_API}/dogs`);
-  const dogs = response.data;
-  // console.log(dogs);
-  return dispatch({ type: GET_DOGS, payload: dogs });
+  //TODO ERROR HANDLER
+  const dogs = await fetchDogs();
+  dispatch({
+    type: GET_DOGS_ACTION,
+    payload: dogs,
+  });
 };
 
-export const getQueryDogs = () => async (dispatch) => {
-  const data = await axios.get(`${URL_API}/dogs:id`);
-  const dogs = data.data;
-  // console.log(dogs);
-  return dispatch({ type: GET_DOGS, payload: dogs });
+export const getQueryDogs = (name) => async (dispatch) => {
+  //TODO ERROR HANDLER
+  try {
+    const dogs = await fetchDogs(`?name=${name}`);
+
+    dispatch({ type: GET_QUERY_DOGS_ACTION, payload: dogs });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getTemperaments = () => async (dispatch) => {
+  //TODO ERROR HANDLER
+  try {
+    const temperaments = await fetchTemperaments();
+    dispatch({ type: GET_TEMPERAMENTS_ACTION, payload: temperaments });
+  } catch (error) {
+    dispatch({ type: "FETCH_ERROR", payload: error });
+  }
+};
+
+export const postDog = (payload) => async (dispatch) => {
+  //TODO ERROR HANDLER
+  try {
+    const dog = createDog(payload);
+    dispatch({ type: POST_DOG_ACTION, payload: dog });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const filterDogsByTemp = (field, value) => {
+  return {
+    type: FILTER_BY_TEMP_ACTION,
+    payload: { field, value },
+  };
+};
+
+export const filterDogsByOrigin = (field, value) => {
+  return { type: FILTER_BY_ORIGIN_ACTION, payload: { field, value } };
+};
+
+export const clearFilters = () => {
+  return { type: CLEAR_FILTERS_ACTION, payload: "" };
+};
+
+export const orderDogs = (value) => {
+  return {
+    type: ORDER_ACTION,
+    payload: value,
+  };
 };

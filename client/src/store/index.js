@@ -5,5 +5,5 @@ import rootReducer from "../reducers/index";
 
 export const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
+  composeWithDevTools(applyMiddleware(thunk)) //QUE HACE EL THUNK Y EL COMPOSE?? TODO
 );
