@@ -14,10 +14,13 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        <Route exact path="/" component={LandingPage} />
-        <Route exact path="/home" component={HomePage} />
-        <Route exact path="/createdog" component={CreateDogPage} />
-        <Route exact path="/dogs/:id" component={DogDetailPage} />
+        <Switch>
+          <Route exact path="/" component={LandingPage} />
+          <Route exact path="/home" component={HomePage} />
+          <Route exact path="/createdog" component={CreateDogPage} />
+          <Route exact path="/dogs/:id" component={DogDetailPage} />
+          {/* <Route path="/*" component={ErrorPage} /> */}
+        </Switch>
       </div>
     </BrowserRouter>
   );

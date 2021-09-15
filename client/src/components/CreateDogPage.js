@@ -2,19 +2,33 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getTemperaments, postDog } from "../actions";
-import { temperamentsOptions } from "../utils";
+import { temperamentsOptions, setPlaceHolder } from "../utils";
+
+const validate = (newDog) => {
+  const errors = {};
+  if (!newDog.name) {
+    errors.name = "Name is required";
+  }
+  if (!newDog.weight) {
+    errors.name = "Weight is required";
+  }
+  if (!newDog.name) {
+    errors.height = "Height is required";
+  }
+};
 
 export const CreateDogPage = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const temperaments = useSelector((state) => state.temperaments);
+  const [errors, setErrors] = useState({});
 
   const [newDog, setNewDog] = useState({
     name: "",
     weight: "",
     height: "",
     life_span: "",
-    image: "Default Image", //TODO
+    image: "client/src/images/fakedog.jpg", //TODO
     temperaments: [],
   });
 
@@ -23,7 +37,9 @@ export const CreateDogPage = () => {
   }, [dispatch]);
 
   const handleChange = (event) => {
-    setNewDog({ ...newDog, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setNewDog({ ...newDog, [name]: value });
+    setErrors(validate({ ...newDog, [name]: value }));
   };
 
   const handleSelect = (event) => {
@@ -87,6 +103,7 @@ export const CreateDogPage = () => {
               </label>
               <input
                 type="text"
+                placeholder={setPlaceHolder(key)}
                 value={newDog[key]}
                 name={key}
                 onChange={handleChange}

@@ -25,6 +25,21 @@ export const temperamentsOptions = (temperaments) =>
     </option>
   ));
 
+export const setPlaceHolder = (key) => {
+  if (key === "weight") {
+    return "E.g. 2-5";
+  }
+  if (key === "height") {
+    return "E.g. 20-45";
+  }
+  if (key === "life_span") {
+    return "E.g. 5-15";
+  }
+  if (key === "image") {
+    return "Enter valid URL";
+  }
+};
+
 export const average = (arr) => {
   const sum = arr.reduce((acc, element) => acc + element, 0);
   const average = sum / arr.length;
