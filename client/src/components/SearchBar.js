@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { getQueryDogs } from "../actions";
+import styles from "./styles/SearchBar.module.css";
 
 export const SearchBar = () => {
   const dispatch = useDispatch();
@@ -18,17 +19,20 @@ export const SearchBar = () => {
     setInputValue("");
     dispatch(getQueryDogs(inputValue));
   };
-
+  //TODO NOT FOUND ACTION
   return (
-    <div>
+    <div className={styles.container}>
       <input
+        className={styles.search_input}
         id="searchInput"
         type="text"
-        placeholder="Search Dog Breed"
+        placeholder="Search Dog"
         onChange={handleChange}
         value={inputValue}
       />
-      <button onClick={handleClick}>Search</button>
+      <button className={styles.search_button} onClick={handleClick}>
+        Search
+      </button>
     </div>
   );
 };

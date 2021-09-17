@@ -13,7 +13,7 @@ const searchDbDogs = async () => await Dog.findAll({ include: Temperament });
 //Merge DB and API dogs
 const mergeDogs = (dogs, dbDogs) => [...dbDogs, ...dogs];
 
-//Map dogs for keeping the useful props
+//Parse api dogs
 const parseDogs = async (dogs) => {
   return await Promise.all(
     dogs.map(async (dog) => {
@@ -37,11 +37,15 @@ const parseDogs = async (dogs) => {
     })
   );
 };
+
+//Parse db dogs
 const parseDbDogs = (dogs) => {
   return dogs.map((dog) => {
     return (newDog = {
       id: dog.id,
-      image: dog.image.url ? dog.image.url : "Default image", //TODO
+      image: dog.image
+        ? dog.image
+        : "https://phraseit.net/image/rendered/vimjvd.jpg",
       name: dog.name,
       temperaments: dog.temperaments,
       weight: dog.weight.split("-").map((weight) => Number(weight)),
@@ -64,6 +68,8 @@ const parseTemperaments = (temps) => {
 
   return temperaments;
 };
+
+//Parse temperaments for matching db instances of temperaments table
 const parseApiTemp = async (temps) => {
   const dbTemps = await Temperament.findAll();
   const temperaments = temps.map((temp) => {
@@ -72,7 +78,6 @@ const parseApiTemp = async (temps) => {
     return undefined;
   });
   const cleanTemperaments = temperaments.filter((temp) => temp !== undefined);
-  // console.log(cleanTemperaments[0].toJSON());
   return cleanTemperaments;
 };
 

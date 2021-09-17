@@ -4,7 +4,6 @@ const {
   URL_API,
   parseDogs,
   parseDbDogs,
-  parseApiTemp,
   fetchData,
   searchDbDogs,
   mergeDogs,
@@ -12,14 +11,14 @@ const {
 
 router.get("/", async (req, res) => {
   try {
+    //fetch api dogs and parse
     const response = await fetchData(URL_API);
-
     const dogs = await parseDogs(response.data);
 
-    // buscar razas en la BD
+    //fetch db dogs and parse
     const dbDogs = parseDbDogs(await searchDbDogs());
 
-    // unir las razas
+    // merge dogs
     const mergedDogs = mergeDogs(dogs, dbDogs);
 
     if (req.query.name) {
@@ -32,7 +31,6 @@ router.get("/", async (req, res) => {
         : res.status(404).json({ error: "There is no such breed" });
     }
 
-    // devolver las razas
     res.json(mergedDogs);
   } catch (error) {
     console.error(error);
@@ -42,10 +40,12 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
 
+  console.log(id, typeof id, "get route");
+
   if (id) {
     try {
       const response = await fetchData(URL_API);
-      const dogs = parseDogs(response.data);
+      const dogs = await parseDogs(response.data);
 
       // Search Breeds in DB
       const dbDogs = await searchDbDogs();

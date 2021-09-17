@@ -27,6 +27,15 @@ export const getQueryDogs = (name) => async (dispatch) => {
 
     dispatch({ type: GET_QUERY_DOGS_ACTION, payload: dogs });
   } catch (error) {
+    console.error(error); //TODO DISPATCH ERROR AL REDUCER
+  }
+};
+
+export const getIdDog = (id) => async (dispatch) => {
+  try {
+    const dog = await fetchDogs(`/${id}`);
+    dispatch({ type: GET_DOG_BY_ID_ACTION, payload: dog });
+  } catch (error) {
     console.error(error);
   }
 };

@@ -1,0 +1,16 @@
+.pagination button {
+  margin: 0 3px 0 3px;
+  border-radius: 20px;
+  color: #000000;
+  font-family: Tahoma;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px;
+  background-color: #ee3fd1ec;
+  box-shadow: 1px 1px 20px 0 #000000;
+  text-shadow: 1px 1px 20px #000000;
+  border: solid #000307 1px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}

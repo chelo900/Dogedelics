@@ -1,5 +1,6 @@
 import React from "react";
 import { SHOWN_PAGES } from "../constants";
+import styles from "./styles/Pagination.module.css";
 
 export const Pagination = ({
   currentPage,
@@ -15,10 +16,10 @@ export const Pagination = ({
   }
   return (
     <nav>
-      <div className="pagination">
+      <div className={styles.pagination}>
         <span>
           <button onClick={handlePage} name="prev">
-            Previos page
+            Prev
           </button>
         </span>
         {pages && currentPage <= pages.length - SHOWN_PAGES
@@ -38,7 +39,7 @@ export const Pagination = ({
               .slice(pages.length - SHOWN_PAGES)}
         <span>
           <button onClick={handlePage} name="next">
-            Next page
+            Next
           </button>
         </span>
       </div>

@@ -11,14 +11,17 @@ import {
   clearFilters,
 } from "../actions";
 import { temperamentsOptions } from "../utils";
-import DogCard from "./Card";
+import Card from "./Card";
 import { Pagination } from "./Pagination";
 import { SearchBar } from "./SearchBar";
+import styles from "./styles/HomePage.module.css";
 
 export const HomePage = () => {
   const dispatch = useDispatch();
   const dogs = useSelector((state) => state.dogs); //Get dogs from state
   const temperaments = useSelector((state) => state.temperaments); //Get temperaments from state
+
+  //TODO NOT FOUND CARD
 
   //PAGINATION
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,69 +70,94 @@ export const HomePage = () => {
     }
   };
   const handleFilterOrigin = (event) => {
-    setCurrentPage(1);
-    dispatch(filterDogsByOrigin(event.target.name, event.target.value));
+    if (event.target.value !== "") {
+      setCurrentPage(1);
+      dispatch(filterDogsByOrigin(event.target.name, event.target.value));
+    }
   };
 
   const handleOrder = (event) => {
-    setCurrentPage(1);
-    console.log(event.target.value);
-    dispatch(orderDogs(event.target.value));
+    if (event.target.value !== "") {
+      setCurrentPage(1);
+      dispatch(orderDogs(event.target.value));
+    }
   };
 
   const dogsElements = currentDogs.map((dog) => {
     return (
-      <DogCard
+      <Card
         key={dog.id}
+        id={dog.id}
         name={dog.name}
         image={dog.image}
         weight={dog.weight}
+        life_span={dog.life_span}
         temperaments={dog.temperaments.map((temp) => temp.name)}
       />
     );
   });
 
   return (
-    <div>
-      <h1>DOG-EDELICS</h1>
-      <Link to="/createdog">Create Breed</Link>
-      <button onClick={handleOnClick}>RESET FILTERS</button>
+    <div className={styles.container}>
+      <div className={styles.nav}>
+        <Link to="/createdog">
+          <button className={styles.create_button}>Create Dog</button>
+        </Link>
+        <h1>DOG-EDELICS</h1>
+        <span>
+          <SearchBar />
+        </span>
+      </div>
       <div>
-        <label htmlFor="temperamentSelect">Temperaments:</label>
         <select
+          className={styles.select}
           name="temperament"
           id="temperamentSelect"
           onChange={handleFilterTemps}
         >
-          <option value="">Choose Temperaments</option>
+          <option value="">Filter by Temperament</option>
 
           {temperamentsOptions(temperaments)}
         </select>
 
-        <label htmlFor="originSelect">Origin</label>
-        <select name="origin" id="originSelect" onChange={handleFilterOrigin}>
+        <select
+          className={styles.select}
+          name="origin"
+          id="originSelect"
+          onChange={handleFilterOrigin}
+        >
+          <option value="">Filter by Origin</option>
           <option value="allDogs">All Dogs</option>
           <option value="existentDogs">Existent Dogs</option>
           <option value="myDogs">My Dogs</option>
         </select>
-        <label htmlFor="orderBySelect">Order By: </label>
-        <select name="orderBy" id="orderBySelect" onChange={handleOrder}>
+
+        <select
+          className={styles.select}
+          name="orderBy"
+          id="orderBySelect"
+          onChange={handleOrder}
+        >
+          <option value="">Order by </option>
           <option value="nameAsc">A-Z</option>
           <option value="nameDesc">Z-A</option>
           <option value="weightAsc">Weight Asc</option>
           <option value="weightDesc">Weight Desc</option>
         </select>
-        <div>
-          <Pagination
-            currentPage={currentPage}
-            dogsPerPage={dogsPerPage}
-            dogs={dogs}
-            pagination={pagination}
-            handlePage={handlePage}
-          />
-        </div>
-        <SearchBar />
-        {dogsElements}
+        <button className={styles.create_button} onClick={handleOnClick}>
+          RESET FILTERS
+        </button>
+      </div>
+
+      {currentDogs.length > 0 ? dogsElements : <div>LOADING</div>}
+      <div>
+        <Pagination
+          currentPage={currentPage}
+          dogsPerPage={dogsPerPage}
+          dogs={dogs}
+          pagination={pagination}
+          handlePage={handlePage}
+        />
       </div>
     </div>
   );

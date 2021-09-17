@@ -14,6 +14,7 @@ import { average } from "../utils";
 const initialState = {
   dogs: [],
   allDogs: [],
+  dogDetail: {},
   temperaments: [],
   filters: [{ temperament: "" }, { origin: "" }],
 };
@@ -30,6 +31,12 @@ export const rootReducer = (state = initialState, action) => {
     case GET_QUERY_DOGS_ACTION: {
       return { ...state, dogs: action.payload };
     }
+
+    case GET_DOG_BY_ID_ACTION: {
+      return { ...state, dogDetail: action.payload };
+    }
+
+    //TODO ACTUALIZAR STATE CON DOG NOT FOUND
 
     case POST_DOG_ACTION: {
       return { ...state };

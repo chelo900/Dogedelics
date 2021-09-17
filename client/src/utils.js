@@ -40,6 +40,12 @@ export const setPlaceHolder = (key) => {
   }
 };
 
+export const validMeasures = (value) => {
+  const validFormat = /\d*[-]\d*/;
+  if (validFormat.test(value)) return true;
+  return false;
+};
+
 export const average = (arr) => {
   const sum = arr.reduce((acc, element) => acc + element, 0);
   const average = sum / arr.length;
